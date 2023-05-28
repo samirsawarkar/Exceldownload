@@ -1,0 +1,40 @@
+import os
+
+import pandas as pd
+
+import requests
+
+# Read the Excel file
+
+data = pd.read_excel('your_file.xlsx')
+
+# Extract the links from the first column and concatenate them
+
+image_urls = ''
+
+for index, value in data.iloc[:, 0].iteritems():
+
+    image_urls += str(value)
+
+# Create the 'images' folder if it doesn't exist
+
+if not os.path.exists('images'):
+
+    os.makedirs('images')
+
+# Download each image and save it in the 'images' folder
+
+urls_list = image_urls.split(',')  # Split concatenated URLs by comma
+
+for index, image_url in enumerate(urls_list):
+
+    response = requests.get(image_url.strip())  # Remove leading/trailing whitespaces
+
+    # Generate a unique filename for each image
+
+    filename = f'images/image_{index}.jpg'
+
+    with open(filename, 'wb') as file:
+
+        file.write(response.content)
+
